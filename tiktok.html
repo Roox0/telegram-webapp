@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TikTok İşlemleri</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      text-align: center;
+    }
+    h1 {
+      color: #69C9D0; /* TikTok rengi */
+      margin-bottom: 15px;
+    }
+    img {
+      width: 100px;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      text-align: left;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #69C9D0;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #3ca5b5;
+    }
+  </style>
+</head>
+<body>
+  <h1>TikTok İşlemleri</h1>
+  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/69/TikTok_logo.svg/120px-TikTok_logo.svg.png" alt="TikTok Logo" />
+  <form id="tiktokForm">
+    <label for="followers">Gönderilecek Takipçi Sayısı (max 1000):</label>
+    <input type="number" id="followers" name="followers" min="1" max="1000" required />
+
+    <label for="accountUrl">TikTok Hesap URL'si:</label>
+    <input type="url" id="accountUrl" name="accountUrl" placeholder="https://tiktok.com/..." required />
+
+    <button type="submit">Gönder</button>
+  </form>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    const pricePerFollower = 0.05;
+
+    document.getElementById('tiktokForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const followers = parseInt(document.getElementById('followers').value);
+      const accountUrl = document.getElementById('accountUrl').value;
+      const price = followers * pricePerFollower;
+
+      const data = {
+        action: "tiktok",
+        service: "bot",
+        followers: followers,
+        accountUrl: accountUrl,
+        price: price.toFixed(2),
+      };
+
+      tg.sendData(JSON.stringify(data));
+    });
+  </script>
+</body>
+</html>
