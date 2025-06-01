@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram Mini Uygulama</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      background: #f2f2f2;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Hoş Geldin, <span id="username">kullanıcı</span>!</h2>
+    <p>Bu bir Telegram Mini Uygulamasıdır.</p>
+    <button onclick="window.Telegram.WebApp.close()">Uygulamayı Kapat</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // pencereyi tam ekran yap
+
+    const user = tg.initDataUnsafe.user;
+    document.getElementById(\"username\").innerText = user?.first_name || \"kullanıcı\";
+  </script>
+</body>
+</html>
