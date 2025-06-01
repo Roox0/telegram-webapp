@@ -7,79 +7,133 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
       padding: 20px;
-      max-width: 400px;
-      margin: auto;
       text-align: center;
+      max-width: 480px;
+      margin: auto;
     }
+
     h1 {
-      color: #e4405f; /* Instagram rengi */
-      margin-bottom: 15px;
-    }
-    img {
-      width: 100px;
       margin-bottom: 20px;
     }
-    label {
-      display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-      text-align: left;
+
+    .input-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
     }
+
     input, button {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 5px;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
     }
+
     button {
-      background-color: #e4405f;
-      color: white;
-      border: none;
+      background-color: #007aff;
+      color: #fff;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
+
     button:hover {
-      background-color: #b32d45;
+      background-color: #005ecb;
+    }
+
+    .back-btn {
+      margin-top: 20px;
+      background-color: #ddd;
+      color: #333;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Instagram İşlemleri</h1>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/120px-Instagram_logo_2016.svg.png" alt="Instagram Logo" />
-  <form id="instaForm">
-    <label for="followers">Gönderilecek Takipçi Sayısı (max 1000):</label>
-    <input type="number" id="followers" name="followers" min="1" max="1000" required />
 
-    <label for="accountUrl">Instagram Hesap URL'si:</label>
-    <input type="url" id="accountUrl" name="accountUrl" placeholder="https://instagram.com/..." required />
+  <h1>Instagram Takipçi Gönder</h1>
 
-    <button type="submit">Gönder</button>
-  </form>
+  <div class="input-box">
+    <label>Kaç Takipçi Gönderilsin?</label>
+    <input type="number" id="adet" placeholder="Örn: 500">
+
+    <label>Hesap URL</label>
+    <input type="text" id="url" placeholder="Örn: https://instagram.com/kullanici">
+
+    <label>API URL</label>
+    <input type="text" id="apiUrl" placeholder="API Adresi">
+
+    <label>Tutar (₺)</label>
+    <input type="text" id="fiyat" value="0" readonly>
+
+    <button onclick="satinal()">Satın Al</button>
+  </div>
+
+  <div class="message" id="mesaj"></div>
+
+  <button class="back-btn" onclick="geriDon()">🔙 Geri</button>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    const pricePerFollower = 0.05;
+    const birimFiyat = 0.02; // 1 takipçi = 0.02₺ (örnek)
 
-    document.getElementById('instaForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const followers = parseInt(document.getElementById('followers').value);
-      const accountUrl = document.getElementById('accountUrl').value;
-      const price = followers * pricePerFollower;
-
-      const data = {
-        action: "instagram",
-        service: "bot",
-        followers: followers,
-        accountUrl: accountUrl,
-        price: price.toFixed(2),
-      };
-
-      tg.sendData(JSON.stringify(data));
+    document.getElementById("adet").addEventListener("input", function () {
+      const adet = parseInt(this.value) || 0;
+      const fiyat = (adet * birimFiyat).toFixed(2);
+      document.getElementById("fiyat").value = fiyat;
     });
+
+    function satinal() {
+      const adet = parseInt(document.getElementById("adet").value);
+      const url = document.getElementById("url").value;
+      const apiUrl = document.getElementById("apiUrl").value;
+      const fiyat = parseFloat(document.getElementById("fiyat").value);
+
+      // Sahte bakiye kontrolü (örnek)
+      const bakiye = 100; // Kullanıcının bakiyesi burada API'den gelir
+
+      if (!adet || !url || !apiUrl) {
+        document.getElementById("mesaj").innerText = "Lütfen tüm alanları doldurun.";
+        return;
+      }
+
+      if (fiyat > bakiye) {
+        document.getElementById("mesaj").innerText = "Bakiyeniz yetersiz!";
+        return;
+      }
+
+      // API'ye veri gönder
+      fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          tur: "instagram_bot",
+          url: url,
+          adet: adet
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("mesaj").innerText = "✅ Satın alındı, işlem başlatıldı.";
+      })
+      .catch(err => {
+        document.getElementById("mesaj").innerText = "⚠️ API hatası: " + err.message;
+      });
+    }
+
+    function geriDon() {
+      window.location.href = "index.html";
+    }
   </script>
 </body>
 </html>
