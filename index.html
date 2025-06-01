@@ -1,82 +1,88 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Mini Uygulama Menü</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ana Menü</title>
   <style>
     body {
-      font-family: sans-serif;
-      margin: 0;
-      background: #f2f2f2;
-      padding: 10px;
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0; padding: 20px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
     }
-    .container {
+    h1 {
+      margin-bottom: 30px;
+      color: #333;
+    }
+    .menu {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
     }
-    .menu-item {
+    button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       background: white;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
-      padding: 10px;
-      transition: 0.2s;
+      padding: 20px 10px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: box-shadow 0.3s;
+      font-size: 16px;
+      font-weight: 600;
+      color: #444;
     }
-    .menu-item:hover {
-      transform: scale(1.03);
+    button:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .menu-item img {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      margin-bottom: 8px;
-    }
-    .menu-title {
-      font-weight: bold;
-      font-size: 14px;
+    button img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 12px;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
-  <h2 style="text-align:center;">📲 Hizmet Menüsü</h2>
-  <div class="container">
-    <div class="menu-item" onclick="openMenu('instagram')">
-      <img src="https://images.app.goo.gl/WmEAv" alt="Instagram">
-      <div class="menu-title">Instagram İşlemleri</div>
-    </div>
-    <div class="menu-item" onclick="openMenu('tiktok')">
-      <img src="https://i.imgur.com/fd0WJUG.png" alt="TikTok">
-      <div class="menu-title">TikTok İşlemleri</div>
-    </div>
-    <div class="menu-item" onclick="openMenu('hesap')">
-      <img src="https://i.imgur.com/YjwQ7AU.png" alt="Hesaplar">
-      <div class="menu-title">Hesap İşlemleri</div>
-    </div>
-    <div class="menu-item" onclick="openMenu('fake')">
-      <img src="https://i.imgur.com/3ddLr7u.png" alt="Fake No">
-      <div class="menu-title">Fake No İşlemleri</div>
-    </div>
-    <div class="menu-item" onclick="openMenu('bakiye')">
-      <img src="https://i.imgur.com/rd6lNw8.png" alt="Cüzdan">
-      <div class="menu-title">Bakiye Yükleme</div>
-    </div>
-    <div class="menu-item" onclick="openMenu('admin')">
-      <img src="https://i.imgur.com/80pOYb5.png" alt="Admin">
-      <div class="menu-title">Admin İşlemleri</div>
-    </div>
+  <h1>Hizmetler Menüsü</h1>
+  <div class="menu">
+    <button onclick="goTo('instagram.html')">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/120px-Instagram_logo_2016.svg.png" alt="Instagram" />
+      Instagram İşlemleri
+    </button>
+    <button onclick="goTo('tiktok.html')">
+      <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/69/TikTok_logo.svg/120px-TikTok_logo.svg.png" alt="TikTok" />
+      TikTok İşlemleri
+    </button>
+    <button onclick="goTo('hesaplar.html')">
+      <img src="https://cdn-icons-png.flaticon.com/512/1055/1055646.png" alt="Hesaplar" />
+      Hesap İşlemleri
+    </button>
+    <button onclick="goTo('fakeno.html')">
+      <img src="https://cdn-icons-png.flaticon.com/512/159/159832.png" alt="Fake No" />
+      Fake No İşlemleri
+    </button>
+    <button onclick="goTo('bakiye.html')">
+      <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Bakiye" />
+      Bakiye Yükleme
+    </button>
+    <button onclick="goTo('admin.html')">
+      <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="Admin" />
+      Admin Paneli
+    </button>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
-    tg.expand();
 
-    function openMenu(type) {
-      tg.sendData(JSON.stringify({action: "open", menu: type}));
-      // Gelişmiş sistemlerde buraya yönlendirme yapılabilir
-      // örnek: window.location.href = `/menu/${type}.html`
+    function goTo(page) {
+      window.location.href = page;
     }
   </script>
 </body>
