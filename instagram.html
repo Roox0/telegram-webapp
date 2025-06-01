@@ -7,32 +7,42 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f7f8fa;
+      background: linear-gradient(to bottom right, #ffe5ec, #e0f7fa);
       padding: 20px;
       text-align: center;
     }
 
     h2 {
       margin-bottom: 20px;
+      color: #d6336c;
     }
 
     .box {
       background: #fff;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
     }
 
-    button {
-      padding: 10px 16px;
-      margin: 5px;
+    .button {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
       border: none;
-      border-radius: 8px;
-      background-color: #0088cc;
-      color: white;
-      font-weight: bold;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #ff6f91, #ff9671);
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .button:hover {
+      background: linear-gradient(135deg, #ff4e7c, #ff805d);
     }
 
     input {
@@ -48,44 +58,50 @@
     }
 
     .back {
-      background-color: #ccc;
-      color: black;
+      background: #dee2e6;
+      color: #212529;
+    }
+
+    #fiyat-goster {
+      font-weight: bold;
+      margin: 10px 0;
+      color: #343a40;
     }
   </style>
 </head>
 <body>
 
   <div class="box">
-    <h2>Instagram Hizmetleri</h2>
+    <h2>📸 Instagram Hizmetleri</h2>
+
     <div id="selection">
-      <button onclick="selectService('takipci')">Takipçi</button>
-      <button onclick="selectService('begeni')">Beğeni</button>
-      <button onclick="selectService('yorum')">Yorum</button>
-      <button onclick="selectService('canli')">Canlı Yayın</button>
+      <button class="button" onclick="selectService('takipci')">👥 Takipçi Gönder</button>
+      <button class="button" onclick="selectService('begeni')">❤️ Beğeni Gönder</button>
+      <button class="button" onclick="selectService('yorum')">💬 Yorum Gönder</button>
+      <button class="button" onclick="selectService('canli')">📺 Canlı Yayın İzleyici</button>
     </div>
 
     <div id="form-container">
-      <h3 id="form-title"></h3>
-      <input type="number" id="adet" placeholder="Kaç adet?" />
-      <input type="text" id="url" placeholder="Gönderi/Hesap URL'si" />
-      <div id="fiyat-goster"></div>
-      <button onclick="satinal()">Satın Al</button>
-      <br>
-      <button class="back" onclick="geriDon()">← Geri</button>
+      <h3 id="form-title">İşlem</h3>
+      <input type="number" id="adet" placeholder="🔢 Kaç adet?" />
+      <input type="text" id="url" placeholder="🔗 Gönderi veya hesap URL'si" />
+      <div id="fiyat-goster">💰 Tutar: -</div>
+      <button class="button" onclick="satinal()">🛒 Satın Al</button>
+      <button class="button back" onclick="geriDon()">🔙 Geri Dön</button>
     </div>
   </div>
 
   <script>
     let secilen = "";
     let fiyatlar = {};
-    let bakiye = 10.00; // Örnek kullanıcı bakiyesi
+    let bakiye = 25.00; // Örnek bakiye
 
     async function loadPrices() {
       try {
         const res = await fetch("https://senin-site.vercel.app/fiyatlar.json");
         fiyatlar = await res.json();
       } catch (e) {
-        alert("Fiyatlar alınamadı.");
+        alert("❌ Fiyatlar alınamadı!");
       }
     }
 
@@ -93,11 +109,12 @@
       secilen = tur;
       document.getElementById("selection").style.display = "none";
       document.getElementById("form-container").style.display = "block";
+
       const basliklar = {
-        "takipci": "Instagram Takipçi Gönder",
-        "begeni": "Instagram Beğeni Gönder",
-        "yorum": "Instagram Yorum Gönder",
-        "canli": "Instagram Canlı İzleyici Gönder"
+        "takipci": "👥 Takipçi Gönder",
+        "begeni": "❤️ Beğeni Gönder",
+        "yorum": "💬 Yorum Gönder",
+        "canli": "📺 Canlı Yayın İzleyici"
       };
       document.getElementById("form-title").innerText = basliklar[tur];
     }
@@ -105,6 +122,9 @@
     function geriDon() {
       document.getElementById("form-container").style.display = "none";
       document.getElementById("selection").style.display = "block";
+      document.getElementById("fiyat-goster").innerText = "💰 Tutar: -";
+      document.getElementById("adet").value = "";
+      document.getElementById("url").value = "";
     }
 
     async function satinal() {
@@ -113,19 +133,19 @@
       const fiyat = fiyatlar[secilen] * adet;
 
       if (!adet || !url) {
-        alert("Tüm alanları doldurun!");
+        alert("⚠️ Lütfen tüm alanları doldurun!");
         return;
       }
 
-      document.getElementById("fiyat-goster").innerText = `Toplam: ${fiyat.toFixed(2)}₺`;
+      document.getElementById("fiyat-goster").innerText = `💰 Tutar: ${fiyat.toFixed(2)}₺`;
 
       if (bakiye < fiyat) {
-        alert("Yetersiz bakiye!");
+        alert("💸 Yetersiz bakiye!");
         return;
       }
 
-      // API’ye gönderim (örnek)
-      const apiKey = "BURAYA_API_KEY_YAZ"; // Bu kısım koda gömülü olacak
+      // API'ye gönderim simülasyonu
+      const apiKey = "SABİT_API_KEY";
       const response = await fetch("https://api.seninservisin.com/instagram", {
         method: "POST",
         headers: {
@@ -136,15 +156,15 @@
           tur: secilen,
           miktar: adet,
           url: url,
-          kullanici_id: "otomatik-telegram-userid"
+          kullanici_id: "telegram_user_id"
         })
       });
 
       if (response.ok) {
-        alert("Satın alındı! Hizmet gönderildi.");
+        alert("✅ Satın alındı ve gönderildi!");
         bakiye -= fiyat;
       } else {
-        alert("API hatası oluştu.");
+        alert("🚫 API gönderim hatası!");
       }
     }
 
