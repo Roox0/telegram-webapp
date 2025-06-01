@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Paneli</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 450px;
+      margin: auto;
+      text-align: center;
+      background-color: #f7f7f7;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      text-align: left;
+    }
+    input, button, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #555;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #222;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Paneli</h1>
+  <form id="adminForm">
+    <label for="command">Komut Giriniz:</label>
+    <input type="text" id="command" name="command" placeholder="Örnek: bakiye_ekle, hesap_sil" required />
+
+    <label for="details">Detaylar:</label>
+    <textarea id="details" name="details" rows="4" placeholder="Detayları buraya girin..."></textarea>
+
+    <button type="submit">Gönder</button>
+  </form>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+
+    document.getElementById('adminForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const command = document.getElementById('command').value.trim();
+      const details = document.getElementById('details').value.trim();
+
+      const data = {
+        action: "admin_command",
+        command: command,
+        details: details,
+      };
+
+      tg.sendData(JSON.stringify(data));
+    });
+  </script>
+</body>
+</html>
