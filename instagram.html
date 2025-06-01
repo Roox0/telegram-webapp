@@ -7,29 +7,27 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #f2f2f2;
       padding: 20px;
-      text-align: center;
       max-width: 480px;
       margin: auto;
+      text-align: center;
     }
 
-    h1 {
+    .hidden { display: none; }
+
+    .box {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 20px;
       margin-bottom: 20px;
     }
 
-    .input-box {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
-
-    input, button {
+    button, input {
       width: 100%;
       padding: 12px;
-      margin-top: 8px;
+      margin-top: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
@@ -37,7 +35,7 @@
 
     button {
       background-color: #007aff;
-      color: #fff;
+      color: white;
       font-weight: bold;
       cursor: pointer;
     }
@@ -47,93 +45,126 @@
     }
 
     .back-btn {
-      margin-top: 20px;
-      background-color: #ddd;
-      color: #333;
+      background: #ccc;
+      color: black;
     }
 
     .message {
-      margin-top: 15px;
+      margin-top: 10px;
       font-weight: bold;
     }
+
   </style>
 </head>
 <body>
 
-  <h1>Instagram Takipçi Gönder</h1>
+  <h2>Instagram Hizmetleri</h2>
 
-  <div class="input-box">
-    <label>Kaç Takipçi Gönderilsin?</label>
-    <input type="number" id="adet" placeholder="Örn: 500">
-
-    <label>Hesap URL</label>
-    <input type="text" id="url" placeholder="Örn: https://instagram.com/kullanici">
-
-    <label>API URL</label>
-    <input type="text" id="apiUrl" placeholder="API Adresi">
-
-    <label>Tutar (₺)</label>
-    <input type="text" id="fiyat" value="0" readonly>
-
-    <button onclick="satinal()">Satın Al</button>
+  <!-- 1. İşlem Seçimi -->
+  <div class="box" id="secimBox">
+    <button onclick="selectIslem('takipci')">Takipçi Gönder</button>
+    <button onclick="selectIslem('begeni')">Beğeni Gönder</button>
+    <button onclick="selectIslem('yorum')">Yorum Gönder</button>
+    <button onclick="selectIslem('canli')">Canlı Yayın İzlenme</button>
+    <button class="back-btn" onclick="geriDon()">🔙 Geri</button>
   </div>
 
-  <div class="message" id="mesaj"></div>
+  <!-- 2. İşlem Formları -->
+  <div class="box hidden" id="formBox">
+    <h3 id="formTitle"></h3>
 
-  <button class="back-btn" onclick="geriDon()">🔙 Geri</button>
+    <input type="number" id="adet" placeholder="Adet (örn. 500)">
+    <input type="text" id="url" placeholder="Gönderi/Hesap/Canlı URL">
+    <input type="text" id="apiUrl" placeholder="API URL">
+
+    <p>Tutar: <span id="fiyat">0</span> ₺</p>
+    <button onclick="satinal()">Satın Al</button>
+    <button class="back-btn" onclick="geriForm()">🔙 Geri</button>
+
+    <div class="message" id="mesaj"></div>
+  </div>
 
   <script>
-    const birimFiyat = 0.02; // 1 takipçi = 0.02₺ (örnek)
+    const fiyatlar = {
+      takipci: 0.02,
+      begeni: 0.01,
+      yorum: 0.05,
+      canli: 0.03
+    };
+
+    let seciliIslem = "";
+    let kullaniciId = new URLSearchParams(window.location.search).get("user_id") || "anonim"; // Telegram’dan gelen ID
+
+    function selectIslem(islem) {
+      seciliIslem = islem;
+      document.getElementById("secimBox").classList.add("hidden");
+      document.getElementById("formBox").classList.remove("hidden");
+      document.getElementById("formTitle").innerText = {
+        takipci: "Takipçi Gönder",
+        begeni: "Beğeni Gönder",
+        yorum: "Yorum Gönder",
+        canli: "Canlı Yayın İzlenme"
+      }[islem];
+
+      document.getElementById("adet").value = "";
+      document.getElementById("url").value = "";
+      document.getElementById("fiyat").innerText = "0";
+    }
 
     document.getElementById("adet").addEventListener("input", function () {
       const adet = parseInt(this.value) || 0;
-      const fiyat = (adet * birimFiyat).toFixed(2);
-      document.getElementById("fiyat").value = fiyat;
+      const fiyat = (adet * fiyatlar[seciliIslem]).toFixed(2);
+      document.getElementById("fiyat").innerText = fiyat;
     });
 
     function satinal() {
       const adet = parseInt(document.getElementById("adet").value);
       const url = document.getElementById("url").value;
       const apiUrl = document.getElementById("apiUrl").value;
-      const fiyat = parseFloat(document.getElementById("fiyat").value);
-
-      // Sahte bakiye kontrolü (örnek)
-      const bakiye = 100; // Kullanıcının bakiyesi burada API'den gelir
+      const fiyat = parseFloat(document.getElementById("fiyat").innerText);
+      const bakiye = 999; // Demo bakiye, API ile değiştirilebilir
 
       if (!adet || !url || !apiUrl) {
-        document.getElementById("mesaj").innerText = "Lütfen tüm alanları doldurun.";
+        document.getElementById("mesaj").innerText = "Tüm alanları doldurun.";
         return;
       }
 
       if (fiyat > bakiye) {
-        document.getElementById("mesaj").innerText = "Bakiyeniz yetersiz!";
+        document.getElementById("mesaj").innerText = "Bakiyeniz yetersiz.";
         return;
       }
 
-      // API'ye veri gönder
       fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          tur: "instagram_bot",
+          tur: seciliIslem,
           url: url,
-          adet: adet
+          adet: adet,
+          kullanici_id: kullaniciId
         })
       })
       .then(res => res.json())
       .then(data => {
-        document.getElementById("mesaj").innerText = "✅ Satın alındı, işlem başlatıldı.";
+        document.getElementById("mesaj").innerText = "✅ Satın alındı. İşlem gönderildi.";
       })
       .catch(err => {
-        document.getElementById("mesaj").innerText = "⚠️ API hatası: " + err.message;
+        document.getElementById("mesaj").innerText = "❌ API hatası: " + err.message;
       });
+    }
+
+    function geriForm() {
+      document.getElementById("formBox").classList.add("hidden");
+      document.getElementById("secimBox").classList.remove("hidden");
+      document.getElementById("mesaj").innerText = "";
     }
 
     function geriDon() {
       window.location.href = "index.html";
     }
   </script>
+
 </body>
 </html>
