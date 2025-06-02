@@ -2,84 +2,130 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TikTok İşlemleri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikTok Hizmetleri</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fdfcfe;
+      margin: 0;
       padding: 20px;
-      max-width: 400px;
-      margin: auto;
+    }
+    h2 {
       text-align: center;
+      color: #000;
     }
-    h1 {
-      color: #69C9D0; /* TikTok rengi */
-      margin-bottom: 15px;
-    }
-    img {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-    label {
+    .button {
       display: block;
-      margin: 10px 0 5px;
-      font-weight: bold;
-      text-align: left;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    input, button {
+    .button:hover {
+      background-color: #333;
+    }
+    .hidden {
+      display: none;
+    }
+    .form {
+      margin-top: 20px;
+    }
+    input[type="text"], input[type="number"] {
       width: 100%;
       padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 5px;
+      margin: 6px 0;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      font-size: 16px;
     }
-    button {
-      background-color: #69C9D0;
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #3ca5b5;
+    .back-button {
+      background-color: #f44336;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>TikTok İşlemleri</h1>
-  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/69/TikTok_logo.svg/120px-TikTok_logo.svg.png" alt="TikTok Logo" />
-  <form id="tiktokForm">
-    <label for="followers">Gönderilecek Takipçi Sayısı (max 1000):</label>
-    <input type="number" id="followers" name="followers" min="1" max="1000" required />
+  <h2>📱 TikTok Hizmetleri</h2>
 
-    <label for="accountUrl">TikTok Hesap URL'si:</label>
-    <input type="url" id="accountUrl" name="accountUrl" placeholder="https://tiktok.com/..." required />
+  <button class="button" onclick="selectService('takipci')">👥 Takipçi Gönder</button>
+  <button class="button" onclick="selectService('begeni')">❤️ Beğeni Gönder</button>
+  <button class="button" onclick="selectService('yorum')">💬 Yorum Gönder</button>
+  <button class="button" onclick="selectService('canli')">🔴 Canlı Yayın İzlenme</button>
+  <button class="button back-button" onclick="window.location.href='index.html'">⬅️ Geri Dön</button>
 
-    <button type="submit">Gönder</button>
-  </form>
+  <div id="formArea" class="form hidden">
+    <div id="formContent"></div>
+    <button class="button" onclick="satinal()">✅ Satın Al</button>
+  </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    const pricePerFollower = 0.05;
+    const fiyatlar = {
+      takipci: 3.0,
+      begeni: 2.0,
+      yorum: 2.5,
+      canli: 5.0
+    };
 
-    document.getElementById('tiktokForm').addEventListener('submit', (e) => {
-      e.preventDefault();
+    let secilenHizmet = '';
 
-      const followers = parseInt(document.getElementById('followers').value);
-      const accountUrl = document.getElementById('accountUrl').value;
-      const price = followers * pricePerFollower;
+    function selectService(service) {
+      secilenHizmet = service;
+      let html = '';
+      if (service === 'takipci') {
+        html = `
+          <input type="number" id="miktar" placeholder="Kaç takipçi gönderilsin?">
+          <input type="text" id="url" placeholder="TikTok hesabının URL'sini girin">
+          <p>Fiyat: ${fiyatlar[service]} ₺</p>
+        `;
+      } else if (service === 'begeni') {
+        html = `
+          <input type="number" id="miktar" placeholder="Kaç beğeni gönderilsin?">
+          <input type="text" id="url" placeholder="Gönderi URL'sini girin">
+          <p>Fiyat: ${fiyatlar[service]} ₺</p>
+        `;
+      } else if (service === 'yorum') {
+        html = `
+          <input type="number" id="miktar" placeholder="Kaç yorum gönderilsin?">
+          <input type="text" id="url" placeholder="Gönderi URL'sini girin">
+          <p>Fiyat: ${fiyatlar[service]} ₺</p>
+        `;
+      } else if (service === 'canli') {
+        html = `
+          <input type="number" id="miktar" placeholder="Kaç izleyici gönderilsin?">
+          <input type="text" id="url" placeholder="Canlı yayın URL'sini girin">
+          <p>Fiyat: ${fiyatlar[service]} ₺</p>
+        `;
+      }
+      document.getElementById('formContent').innerHTML = html;
+      document.getElementById('formArea').classList.remove('hidden');
+    }
 
-      const data = {
-        action: "tiktok",
-        service: "bot",
-        followers: followers,
-        accountUrl: accountUrl,
-        price: price.toFixed(2),
-      };
+    function satinal() {
+      const miktar = document.getElementById('miktar').value;
+      const url = document.getElementById('url').value;
+      const fiyat = fiyatlar[secilenHizmet] * miktar;
 
-      tg.sendData(JSON.stringify(data));
-    });
+      if (!miktar || !url) {
+        alert("Lütfen tüm alanları doldurun.");
+        return;
+      }
+
+      // Bakiyeyi kontrol etme ve api ile gönderme
+      // Bu kısmı Python backend'inizle entegre edeceksiniz
+      alert(`Satın alındı. ${fiyat} ₺ bakiyenizden düşüldü.`);
+
+      // API örnek isteği
+      fetch("https://api.ornek.com/tiktok/" + secilenHizmet, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ miktar: miktar, url: url })
+      });
+    }
   </script>
 </body>
 </html>
