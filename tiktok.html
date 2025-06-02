@@ -93,6 +93,14 @@
     }
 
     function geriDon() {
+  document.getElementById('menu').classList.remove('hidden');
+  document.getElementById('form-container').classList.add('hidden');
+  document.querySelectorAll('#form-container > div').forEach(div => div.classList.add('hidden'));
+    }
+
+   
+
+    function geriDon() {
       document.getElementById('menu').classList.remove('hidden');
       document.getElementById('form-container').classList.add('hidden');
       document.querySelectorAll('#form-container > div').forEach(div => div.classList.add('hidden'));
