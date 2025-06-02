@@ -45,6 +45,39 @@
       <button class="menu-btn" style="background: green;" onclick="satinAl('takipci')">✅ Satın Al</button>
     </div>
 
+    <div id="begeni-form" class="hidden">
+      <div class="field">
+        <input type="number" id="begeni-sayi" placeholder="Kaç beğeni yollansın?" oninput="hesaplaFiyat('begeni')">
+      </div>
+      <div class="field">
+        <input type="text" id="begeni-url" placeholder="TikTok video URL'si">
+      </div>
+      <div class="price" id="begeni-fiyat">💸 Fiyat: 0₺</div>
+      <button class="menu-btn" style="background: green;" onclick="satinAl('begeni')">✅ Satın Al</button>
+    </div>
+
+    <div id="yorum-form" class="hidden">
+      <div class="field">
+        <input type="number" id="yorum-sayi" placeholder="Kaç yorum yollansın?" oninput="hesaplaFiyat('yorum')">
+      </div>
+      <div class="field">
+        <input type="text" id="yorum-url" placeholder="TikTok video URL'si">
+      </div>
+      <div class="price" id="yorum-fiyat">💸 Fiyat: 0₺</div>
+      <button class="menu-btn" style="background: green;" onclick="satinAl('yorum')">✅ Satın Al</button>
+    </div>
+
+    <div id="canli-form" class="hidden">
+      <div class="field">
+        <input type="number" id="canli-sayi" placeholder="Kaç izleyici yollansın?" oninput="hesaplaFiyat('canli')">
+      </div>
+      <div class="field">
+        <input type="text" id="canli-url" placeholder="Canlı yayın linki">
+      </div>
+      <div class="price" id="canli-fiyat">💸 Fiyat: 0₺</div>
+      <button class="menu-btn" style="background: green;" onclick="satinAl('canli')">✅ Satın Al</button>
+    </div>
+
     <!-- Diğer formlar buraya benzer şekilde eklenebilir -->
 
     <button class="back-btn" onclick="geriDon()">⬅️ Geri Dön</button>
