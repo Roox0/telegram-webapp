@@ -1,120 +1,90 @@
+<!-- instagram.html -->
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Instagram İşlemleri</title>
+  <meta charset="UTF-8">
+  <title>Instagram Hizmetleri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      padding: 20px;
-      color: #333;
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; text-align: center; }
+    .menu-btn { background: #e1306c; color: white; border: none; padding: 15px; border-radius: 10px; font-size: 18px; margin: 10px; cursor: pointer; width: 80%; }
+    .hidden { display: none; }
+    .field { margin: 15px 0; }
+    input[type="number"], input[type="text"] {
+      padding: 10px; width: 80%; border: 1px solid #ccc; border-radius: 8px;
     }
-    h2 {
-      text-align: center;
-    }
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      background-color: #e1306c;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .back-btn {
-      background-color: #666;
-    }
-    .form-container {
-      display: none;
-      margin-top: 20px;
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      margin-top: 12px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .price {
-      margin: 10px 0;
-      font-weight: bold;
-    }
+    .back-btn { background: #333; color: white; padding: 10px 20px; border-radius: 10px; margin-top: 20px; cursor: pointer; }
+    .price { font-weight: bold; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h2>📸 Instagram Hizmetleri</h2>
 
-  <button onclick="selectService('followers')">👥 Takipçi Gönder</button>
-  <button onclick="selectService('likes')">❤️ Beğeni Gönder</button>
-  <button onclick="selectService('comments')">💬 Yorum Yap</button>
-  <button onclick="selectService('live')">🔴 Canlı Yayın İzlenme</button>
-  <button class="back-btn" onclick="goBack()">🔙 Geri Dön</button>
+  <h2>📱 Instagram Hizmetleri</h2>
 
-  <div id="form" class="form-container">
-    <form id="serviceForm">
-      <label for="link">URL:</label>
-      <input type="text" id="link" name="link" placeholder="Gönderi veya canlı yayın linki" required />
+  <div id="menu">
+    <button class="menu-btn" onclick="showForm('takipci')">👥 Takipçi Gönder</button>
+    <button class="menu-btn" onclick="showForm('begeni')">❤️ Beğeni Gönder</button>
+    <button class="menu-btn" onclick="showForm('yorum')">💬 Yorum Gönder</button>
+    <button class="menu-btn" onclick="showForm('canli')">🎥 Canlı İzleyici</button>
+  </div>
 
-      <label for="amount">Miktar:</label>
-      <input type="number" id="amount" name="amount" placeholder="Kaç adet?" required />
+  <div id="form-container" class="hidden">
+    <div id="takipci-form" class="hidden">
+      <div class="field">
+        <input type="number" id="takipci-sayi" placeholder="Kaç takipçi yollansın?" oninput="hesaplaFiyat('takipci')">
+      </div>
+      <div class="field">
+        <input type="text" id="takipci-url" placeholder="Instagram profil URL'si">
+      </div>
+      <div class="price" id="takipci-fiyat">💸 Fiyat: 0₺</div>
+      <button class="menu-btn" style="background: green;" onclick="satinAl('takipci')">✅ Satın Al</button>
+    </div>
 
-      <div id="priceInfo" class="price"></div>
+    <!-- Diğer formlar buraya benzer şekilde eklenebilir -->
 
-      <button type="submit">Satın Al</button>
-    </form>
+    <button class="back-btn" onclick="geriDon()">⬅️ Geri Dön</button>
   </div>
 
   <script>
-    const prices = {
-      followers: 0.02,
-      likes: 0.01,
-      comments: 0.05,
-      live: 0.03
+    const fiyatlar = {
+      takipci: 0.10, // 1 takipçi = 0.10₺
+      begeni: 0.05,
+      yorum: 0.20,
+      canli: 0.15
     };
 
-    let selectedService = null;
-
-    function selectService(service) {
-      selectedService = service;
-      document.getElementById("form").style.display = "block";
-      document.getElementById("priceInfo").textContent = "";
+    function showForm(tur) {
+      document.getElementById('menu').classList.add('hidden');
+      document.getElementById('form-container').classList.remove('hidden');
+      document.getElementById(`${tur}-form`).classList.remove('hidden');
     }
 
-    function goBack() {
-      window.location.href = "index.html";
+    function geriDon() {
+      document.getElementById('menu').classList.remove('hidden');
+      document.getElementById('form-container').classList.add('hidden');
+      document.querySelectorAll('#form-container > div').forEach(div => div.classList.add('hidden'));
     }
 
-    document.getElementById("serviceForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const amount = parseInt(document.getElementById("amount").value);
-      const url = document.getElementById("link").value;
-      const unitPrice = prices[selectedService];
-      const total = (amount * unitPrice).toFixed(2);
+    function hesaplaFiyat(tur) {
+      const sayi = parseInt(document.getElementById(`${tur}-sayi`).value || 0);
+      const fiyat = sayi * fiyatlar[tur];
+      document.getElementById(`${tur}-fiyat`).innerText = `💸 Fiyat: ${fiyat.toFixed(2)}₺`;
+    }
 
-      // API entegrasyonu yapılacak yer
-      const balance = 100; // örnek bakiye
+    function satinAl(tur) {
+      const sayi = parseInt(document.getElementById(`${tur}-sayi`).value || 0);
+      const url = document.getElementById(`${tur}-url`).value;
+      const fiyat = (sayi * fiyatlar[tur]).toFixed(2);
 
-      if (balance >= total) {
-        alert(`✔️ Satın alındı! \n${amount} adet gönderildi. Toplam: ${total} TL`);
-        // Burada API'ye gönderim kodu entegre edilecek
-      } else {
-        alert("❌ Yetersiz bakiye.");
-      }
-    });
+      if (!sayi || !url) return alert("Lütfen tüm alanları doldurun!");
+
+      // API isteği gönderilecek (örnek):
+      alert(`✅ Satın alma başarılı\nURL: ${url}\nAdet: ${sayi}\nFiyat: ${fiyat}₺`);
+
+      // Burada fetch ile API'ye gönderim yapılabilir
+      // fetch('/api/satin-al', { method: 'POST', body: JSON.stringify({...}) })
+    }
   </script>
+
 </body>
 </html>
