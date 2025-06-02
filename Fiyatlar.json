@@ -1,0 +1,24 @@
+{
+  "instagram": {
+    "takipci": 2.5,
+    "begeni": 1.8,
+    "yorum": 3.0,
+    "canli": 4.5
+  },
+  "tiktok": {
+    "takipci": 3.0,
+    "begeni": 2.0,
+    "yorum": 2.5,
+    "canli": 5.0
+  },
+  "fakeno": {
+    "turkiye": 1.0,
+    "abd": 1.2,
+    "almanya": 1.1
+  },
+  "hesaplar": {
+    "pubg": 10.0,
+    "valorant": 8.5,
+    "mlbb": 7.0
+  }
+}
